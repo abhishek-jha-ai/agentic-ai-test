@@ -7,10 +7,10 @@ class TitleParser(HTMLParser):
         self.in_title = False
         self.title = None
     def handle_starttag(self, tag, attrs):
-        if tag.lower() == 'title':
+        if tag == 'title':
             self.in_title = True
     def handle_endtag(self, tag):
-        if tag.lower() == 'title':
+        if tag == 'title':
             self.in_title = False
     def handle_data(self, data):
         if self.in_title:
