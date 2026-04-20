@@ -12,6 +12,37 @@
       background: #f9f9f9;
       color: #222;
     }
+    nav {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 0.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+    nav ul li {
+      display: inline;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #222;
+      font-weight: 500;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+    nav ul li a:hover, nav ul li a:focus {
+      background: #222;
+      color: #fff;
+    }
     header {
       background: #222;
       color: #fff;
@@ -35,13 +66,36 @@
   </style>
 </head>
 <body>
-  <header>
+  <nav>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <header id="home">
     <h1>Welcome to My Portfolio</h1>
     <p>Discover my projects and experience</p>
   </header>
   <main>
     <h2>Hello!</h2>
     <p>This is the homepage of my personal portfolio website. More sections coming soon.</p>
+
+    <section id="about" style="margin-top:3rem;">
+      <h2>About</h2>
+      <p>About section coming soon.</p>
+    </section>
+
+    <section id="projects" style="margin-top:3rem;">
+      <h2>Projects</h2>
+      <p>Projects section coming soon.</p>
+    </section>
+
+    <section id="contact" style="margin-top:3rem;">
+      <h2>Contact</h2>
+      <p>Contact section coming soon.</p>
+    </section>
   </main>
 </body>
 </html>
