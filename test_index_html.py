@@ -147,3 +147,64 @@ def test_index_html_contact_section_has_email_and_links():
     has_github = any(l['href'] and 'github' in l['href'].lower() for l in parser.links)
     has_linkedin = any(l['href'] and 'linkedin' in l['href'].lower() for l in parser.links)
     assert has_github or has_linkedin, 'Contact section should have a GitHub or LinkedIn link placeholder.'
+
+
+# --- Projects Section Tests ---
+from html.parser import HTMLParser
+
+class ProjectsSectionParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_projects_section = False
+        self.projects_section_found = False
+        self.project_cards = []
+        self.current_project = None
+        self.current_tag = None
+    def handle_starttag(self, tag, attrs):
+        if tag == 'section':
+            for k, v in attrs:
+                if k == 'id' and v.lower() == 'projects':
+                    self.in_projects_section = True
+                    self.projects_section_found = True
+        if self.in_projects_section and tag == 'article':
+            for k, v in attrs:
+                if k == 'class' and 'project-card' in v:
+                    self.current_project = {'title': '', 'description': '', 'link': None}
+        if self.current_project is not None:
+            if tag == 'h3':
+                self.current_tag = 'title'
+            elif tag == 'p':
+                self.current_tag = 'description'
+            elif tag == 'a':
+                href = None
+                for k, v in attrs:
+                    if k == 'href':
+                        href = v
+                self.current_project['link'] = href
+                self.current_tag = 'link'
+    def handle_endtag(self, tag):
+        if tag == 'section' and self.in_projects_section:
+            self.in_projects_section = False
+        if tag == 'article' and self.current_project is not None:
+            self.project_cards.append(self.current_project)
+            self.current_project = None
+            self.current_tag = None
+        if self.current_tag in ('title', 'description', 'link') and tag in ('h3', 'p', 'a'):
+            self.current_tag = None
+    def handle_data(self, data):
+        if self.current_project is not None and self.current_tag in ('title', 'description'):
+            self.current_project[self.current_tag] += data.strip()
+
+def test_index_html_has_projects_section():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    parser = ProjectsSectionParser()
+    parser.feed(content)
+    assert parser.projects_section_found, 'index.html missing projects section with id="projects".'
+    # At least 3 project cards
+    assert len(parser.project_cards) >= 3, 'Projects section should have at least 3 project cards.'
+    for project in parser.project_cards:
+        assert project['title'], 'Each project card should have a title.'
+        assert project['description'], 'Each project card should have a description.'
+        assert project['link'] is not None, 'Each project card should have a link.'
+        assert project['link'].startswith('#') or project['link'].startswith('http'), 'Project link should be a valid URL or anchor.'
