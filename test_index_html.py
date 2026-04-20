@@ -82,3 +82,68 @@ def test_index_html_navbar_has_links():
     for link in parser.nav_links:
         assert link['href'] is not None and link['href'].startswith('#'), 'Navigation links should use anchor hrefs.'
         assert link['text'], 'Navigation link text should not be empty.'
+
+
+# --- Contact Section Tests ---
+from html.parser import HTMLParser
+
+class ContactSectionParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_contact_section = False
+        self.contact_section_found = False
+        self.links = []
+        self.emails = []
+        self.current_link = None
+        self.current_tag = None
+    def handle_starttag(self, tag, attrs):
+        if tag == 'section':
+            for k, v in attrs:
+                if k == 'id' and v.lower() == 'contact':
+                    self.in_contact_section = True
+                    self.contact_section_found = True
+        if self.in_contact_section and tag == 'a':
+            href = None
+            for k, v in attrs:
+                if k == 'href':
+                    href = v
+            self.current_link = {'href': href, 'text': ''}
+            self.current_tag = 'a'
+        if self.in_contact_section and tag == 'span':
+            self.current_tag = 'span'
+    def handle_endtag(self, tag):
+        if tag == 'section' and self.in_contact_section:
+            self.in_contact_section = False
+        if self.in_contact_section and tag == 'a' and self.current_link:
+            self.links.append(self.current_link)
+            self.current_link = None
+            self.current_tag = None
+        if self.in_contact_section and tag == 'span':
+            self.current_tag = None
+    def handle_data(self, data):
+        if self.in_contact_section and self.current_tag == 'a' and self.current_link is not None:
+            self.current_link['text'] += data.strip()
+        if self.in_contact_section and self.current_tag == 'span':
+            text = data.strip()
+            if '@' in text:
+                self.emails.append(text)
+
+def test_index_html_has_contact_section():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    parser = ContactSectionParser()
+    parser.feed(content)
+    assert parser.contact_section_found, 'index.html missing contact section with id="contact".'
+
+def test_index_html_contact_section_has_email_and_links():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    parser = ContactSectionParser()
+    parser.feed(content)
+    # At least one email placeholder (could be a span or mailto link)
+    has_email = len(parser.emails) > 0 or any(l['href'] and l['href'].startswith('mailto:') for l in parser.links)
+    assert has_email, 'Contact section should have an email placeholder.'
+    # At least one GitHub or LinkedIn link placeholder
+    has_github = any(l['href'] and 'github' in l['href'].lower() for l in parser.links)
+    has_linkedin = any(l['href'] and 'linkedin' in l['href'].lower() for l in parser.links)
+    assert has_github or has_linkedin, 'Contact section should have a GitHub or LinkedIn link placeholder.'
