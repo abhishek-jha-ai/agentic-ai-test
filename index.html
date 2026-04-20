@@ -89,8 +89,65 @@
 
     <section id="projects" style="margin-top:3rem;">
       <h2>Projects</h2>
-      <p>Projects section coming soon.</p>
+      <div class="projects-grid">
+        <article class="project-card">
+          <h3>Weather App</h3>
+          <p>A responsive web app that displays real-time weather information for any city using the OpenWeatherMap API. Built with HTML, CSS, and JavaScript.</p>
+          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+        </article>
+        <article class="project-card">
+          <h3>Task Tracker</h3>
+          <p>A simple and intuitive task management tool to help users organize their daily activities. Features include adding, editing, and deleting tasks.</p>
+          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+        </article>
+        <article class="project-card">
+          <h3>Portfolio Website</h3>
+          <p>This personal portfolio website showcases my projects, skills, and contact information. Designed with a clean and modern layout.</p>
+          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+        </article>
+      </div>
     </section>
+
+    <style>
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 2rem;
+        margin-top: 1.5rem;
+      }
+      .project-card {
+        background: #f5f5f5;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        padding: 1.25rem 1rem 1rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        transition: box-shadow 0.2s;
+      }
+      .project-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      }
+      .project-card h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.2rem;
+      }
+      .project-card p {
+        margin: 0 0 1rem 0;
+        font-size: 1rem;
+        color: #444;
+      }
+      .project-link {
+        margin-top: auto;
+        color: #222;
+        text-decoration: underline;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .project-link:hover, .project-link:focus {
+        color: #0070f3;
+      }
+    </style>
 
     <section id="contact" style="margin-top:3rem;">
       <h2>Contact</h2>

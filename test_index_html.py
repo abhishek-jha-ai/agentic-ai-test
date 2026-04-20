@@ -1,6 +1,7 @@
 import os
 from html.parser import HTMLParser
 
+import re
 class TitleParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -147,3 +148,65 @@ def test_index_html_contact_section_has_email_and_links():
     has_github = any(l['href'] and 'github' in l['href'].lower() for l in parser.links)
     has_linkedin = any(l['href'] and 'linkedin' in l['href'].lower() for l in parser.links)
     assert has_github or has_linkedin, 'Contact section should have a GitHub or LinkedIn link placeholder.'
+
+# --- Projects Section Tests ---
+class ProjectsSectionParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_projects_section = False
+        self.projects_section_found = False
+        self.projects = []
+        self.current_project = None
+        self.current_tag = None
+        self.section_id = None
+    def handle_starttag(self, tag, attrs):
+        if tag == 'section':
+            for k, v in attrs:
+                if k == 'id' and v.lower() == 'projects':
+                    self.in_projects_section = True
+                    self.projects_section_found = True
+        if self.in_projects_section and tag in ('div', 'article', 'li'):
+            # Start of a project item
+            self.current_project = {'title': '', 'desc': ''}
+            self.current_tag = tag
+        if self.in_projects_section and tag in ('h3', 'h4', 'h2'):
+            self.current_tag = 'title'
+        if self.in_projects_section and tag == 'p':
+            self.current_tag = 'desc'
+    def handle_endtag(self, tag):
+        if tag == 'section' and self.in_projects_section:
+            self.in_projects_section = False
+        if self.in_projects_section and tag in ('div', 'article', 'li') and self.current_project:
+            # End of a project item
+            # Only add if at least a title or desc is present
+            if self.current_project['title'] or self.current_project['desc']:
+                self.projects.append(self.current_project)
+            self.current_project = None
+            self.current_tag = None
+        if self.in_projects_section and tag in ('h3', 'h4', 'h2', 'p'):
+            self.current_tag = None
+    def handle_data(self, data):
+        if self.in_projects_section and self.current_project is not None:
+            if self.current_tag == 'title':
+                self.current_project['title'] += data.strip()
+            elif self.current_tag == 'desc':
+                self.current_project['desc'] += data.strip()
+
+def test_index_html_has_projects_section():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    parser = ProjectsSectionParser()
+    parser.feed(content)
+    assert parser.projects_section_found, 'index.html missing projects section with id="projects".'
+
+def test_index_html_projects_section_has_at_least_three_projects():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    parser = ProjectsSectionParser()
+    parser.feed(content)
+    # Accept projects with at least a title or description
+    projects = [p for p in parser.projects if p['title'] or p['desc']]
+    assert len(projects) >= 3, 'Projects section should display at least 3 sample projects.'
+    # Optionally, check that each project has a title
+    for i, project in enumerate(projects[:3]):
+        assert project['title'], f'Project {i+1} in projects section should have a title.'
