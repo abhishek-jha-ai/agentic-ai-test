@@ -84,6 +84,78 @@ def test_index_html_navbar_has_links():
         assert link['text'], 'Navigation link text should not be empty.'
 
 
+# --- Hero Section (Premium) Tests ---
+from html.parser import HTMLParser
+
+class HeaderParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_header = False
+        self.header_found = False
+        self.header_id = None
+        self.h1 = None
+        self.p = None
+        self.btn_text = None
+        self.btn_href = None
+        self.in_h1 = False
+        self.in_p = False
+        self.in_btn = False
+        self.btn_class = None
+    def handle_starttag(self, tag, attrs):
+        if tag == 'header':
+            self.in_header = True
+            self.header_found = True
+            for k, v in attrs:
+                if k == 'id':
+                    self.header_id = v
+        if self.in_header and tag == 'h1':
+            self.in_h1 = True
+        if self.in_header and tag == 'p':
+            self.in_p = True
+        if self.in_header and tag == 'a':
+            for k, v in attrs:
+                if k == 'class' and 'btn' in v:
+                    self.in_btn = True
+                    self.btn_class = v
+                if k == 'href':
+                    self.btn_href = v
+    def handle_endtag(self, tag):
+        if tag == 'header':
+            self.in_header = False
+        if tag == 'h1':
+            self.in_h1 = False
+        if tag == 'p':
+            self.in_p = False
+        if tag == 'a':
+            self.in_btn = False
+    def handle_data(self, data):
+        if self.in_header and self.in_h1:
+            self.h1 = (self.h1 or '') + data.strip()
+        if self.in_header and self.in_p:
+            self.p = (self.p or '') + data.strip()
+        if self.in_header and self.in_btn:
+            self.btn_text = (self.btn_text or '') + data.strip()
+
+def test_index_html_has_premium_hero_section():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for <header> with id="home"
+    parser = HeaderParser()
+    parser.feed(content)
+    assert parser.header_found, 'index.html missing <header> section.'
+    assert parser.header_id == 'home', 'Hero section <header> should have id="home".'
+    # Check for premium wording in h1
+    assert parser.h1 is not None and 'premium' in parser.h1.lower(), 'Hero section <h1> should mention "premium".'
+    # Check for a call-to-action button
+    assert parser.btn_text is not None and parser.btn_text.strip() != '', 'Hero section should have a call-to-action button.'
+    assert parser.btn_href is not None and parser.btn_href.startswith('#'), 'Hero section button should link to a section.'
+    # Check for background image and overlay in style
+    assert "background:" in content and "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb" in content, 'Hero section should have a premium background image.'
+    assert 'header::before' in content and 'background: rgba(0, 0, 0, 0.6)' in content, 'Hero section should have a dark overlay for premium effect.'
+    # Check for premium subtitle
+    assert parser.p is not None and ("exclusive" in parser.p.lower() or "experience" in parser.p.lower()), 'Hero section <p> should have premium/exclusive wording.'
+
+
 # --- Contact Section Tests ---
 from html.parser import HTMLParser
 
