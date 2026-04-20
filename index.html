@@ -13,12 +13,16 @@
       color: #222;
     }
     nav {
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      padding: 0.5rem 0;
+      background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+      box-shadow: 0 4px 12px rgba(38, 50, 56, 0.3);
+      padding: 0.75rem 0;
       position: sticky;
       top: 0;
       z-index: 100;
+      transition: box-shadow 0.3s ease;
+    }
+    nav:hover {
+      box-shadow: 0 6px 20px rgba(38, 50, 56, 0.5);
     }
     nav ul {
       list-style: none;
@@ -26,22 +30,28 @@
       padding: 0;
       display: flex;
       justify-content: center;
-      gap: 2rem;
+      gap: 2.5rem;
     }
     nav ul li {
       display: inline;
     }
     nav ul li a {
       text-decoration: none;
-      color: #222;
-      font-weight: 500;
-      padding: 0.5rem 0.75rem;
-      border-radius: 4px;
-      transition: background 0.2s, color 0.2s;
+      color: #fff;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s, color 0.3s, transform 0.2s;
+      box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
     nav ul li a:hover, nav ul li a:focus {
-      background: #222;
+      background: rgba(255, 255, 255, 0.3);
       color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
+      outline: none;
     }
     header {
       background: #222;
