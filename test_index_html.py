@@ -208,3 +208,25 @@ def test_index_html_has_projects_section():
         assert project['description'], 'Each project card should have a description.'
         assert project['link'] is not None, 'Each project card should have a link.'
         assert project['link'].startswith('#') or project['link'].startswith('http'), 'Project link should be a valid URL or anchor.'
+
+
+# --- Header Section Tests ---
+def test_index_html_has_header_section():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert '<header' in content.lower(), 'index.html missing <header> section.'
+    assert 'welcome to my portfolio' in content.lower(), 'Header should contain welcome message.'
+
+def test_index_html_header_has_h1_and_p():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert '<h1>' in content.lower(), 'Header missing <h1> tag.'
+    assert '<p>' in content.lower(), 'Header missing <p> tag.'
+
+# --- About Section Tests ---
+def test_index_html_has_about_section():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert '<section id="about"' in content.lower(), 'index.html missing about section with id="about".'
+    assert 'software engineer' in content.lower(), 'About section should mention software engineer.'
+    assert 'portfolio' in content.lower(), 'About section should mention portfolio.'
