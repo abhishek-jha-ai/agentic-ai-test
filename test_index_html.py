@@ -83,6 +83,41 @@ def test_index_html_navbar_has_links():
         assert link['href'] is not None and link['href'].startswith('#'), 'Navigation links should use anchor hrefs.'
         assert link['text'], 'Navigation link text should not be empty.'
 
+# --- Premium Navigation Tests ---
+def test_index_html_navbar_has_premium_gradient():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for linear-gradient in nav style
+    assert 'nav {' in content
+    assert 'linear-gradient' in content or 'background: linear-gradient' in content, 'Navigation bar should have a premium gradient background.'
+    assert '#6a11cb' in content and '#2575fc' in content, 'Navigation bar gradient colors missing.'
+
+def test_index_html_navbar_has_box_shadow():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for box-shadow in nav style
+    assert 'nav {' in content
+    assert 'box-shadow' in content, 'Navigation bar should have a box-shadow for premium look.'
+
+def test_index_html_navbar_links_have_hover_effect():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for hover/active/focus effect on nav links
+    assert 'nav ul li a:hover' in content or 'nav ul li a:focus' in content, 'Navigation links should have hover/focus effect.'
+    assert 'transform: scale(1.1)' in content or 'background: rgba(255, 255, 255, 0.3)' in content, 'Navigation links should have premium hover/focus styling.'
+
+def test_index_html_navbar_is_sticky():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for sticky positioning
+    assert 'position: sticky' in content or 'position: -webkit-sticky' in content, 'Navigation bar should be sticky.'
+    assert 'top: 0' in content, 'Sticky navigation bar should have top: 0.'
+
+def test_index_html_navbar_links_have_blur_effect():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for backdrop-filter blur on nav links
+    assert 'backdrop-filter: blur(6px)' in content or '-webkit-backdrop-filter: blur(6px)' in content, 'Navigation links should have a blur effect for premium look.'
 
 # --- Contact Section Tests ---
 from html.parser import HTMLParser
