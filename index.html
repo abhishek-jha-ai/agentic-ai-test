@@ -63,6 +63,51 @@
     p {
       margin: 0.5rem 0 0 0;
     }
+    /* Projects Section Styles */
+    #projects {
+      margin-top: 3rem;
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .project-card {
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.3s ease;
+    }
+    .project-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .project-title {
+      font-size: 1.2rem;
+      margin: 0 0 0.5rem 0;
+      color: #222;
+    }
+    .project-description {
+      flex-grow: 1;
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+    .project-link {
+      text-decoration: none;
+      color: #0066cc;
+      font-weight: 600;
+      align-self: flex-start;
+      transition: color 0.2s ease;
+    }
+    .project-link:hover, .project-link:focus {
+      color: #004999;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -87,9 +132,25 @@
       <p>About section coming soon.</p>
     </section>
 
-    <section id="projects" style="margin-top:3rem;">
+    <section id="projects">
       <h2>Projects</h2>
-      <p>Projects section coming soon.</p>
+      <div class="projects-grid">
+        <article class="project-card">
+          <h3 class="project-title">Project One</h3>
+          <p class="project-description">A web app that helps users track their daily habits and goals with reminders and analytics.</p>
+          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+        </article>
+        <article class="project-card">
+          <h3 class="project-title">Project Two</h3>
+          <p class="project-description">An e-commerce platform prototype featuring a clean UI and seamless checkout experience.</p>
+          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+        </article>
+        <article class="project-card">
+          <h3 class="project-title">Project Three</h3>
+          <p class="project-description">A mobile-friendly blog template with customizable themes and social media integration.</p>
+          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+        </article>
+      </div>
     </section>
 
     <section id="contact" style="margin-top:3rem;">
