@@ -230,3 +230,46 @@ def test_index_html_has_about_section():
     assert '<section id="about"' in content.lower(), 'index.html missing about section with id="about".'
     assert 'software engineer' in content.lower(), 'About section should mention software engineer.'
     assert 'portfolio' in content.lower(), 'About section should mention portfolio.'
+
+
+# --- Footer Section Tests ---
+def test_index_html_has_footer():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert '<footer' in content.lower(), 'index.html missing <footer> section.'
+
+def test_index_html_footer_has_premium_styles():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for premium footer styles such as gradient background and border radius
+    assert 'background: linear-gradient' in content.lower(), 'Footer should have a gradient background for premium style.'
+    assert 'border-top-left-radius' in content.lower(), 'Footer should have border-top-left-radius for premium style.'
+    assert 'border-top-right-radius' in content.lower(), 'Footer should have border-top-right-radius for premium style.'
+
+def test_index_html_footer_has_logo():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert 'footer-logo' in content.lower(), 'Footer should have a logo element with class "footer-logo".'
+    assert 'aj portfolio' in content.lower(), 'Footer logo text should be "AJ Portfolio".'
+
+def test_index_html_footer_has_navigation_links():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check footer navigation links
+    links = ['#home', '#about', '#projects', '#contact']
+    for link in links:
+        assert f'href="{link}"' in content.lower(), f'Footer should have navigation link to {link}.'
+
+def test_index_html_footer_has_social_icons():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for social icons with expected classes
+    social_classes = ['fas fa-envelope', 'fab fa-github', 'fab fa-linkedin', 'fab fa-twitter']
+    for cls in social_classes:
+        assert cls in content, f'Footer should have social icon with class "{cls}".'
+
+def test_index_html_footer_has_copyright_text():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert '&copy; 2026 Abhishek Jha' in content, 'Footer should have copyright text with year 2026 and author name.'
+    assert 'designed with' in content.lower(), 'Footer should mention "Designed with" text.'
