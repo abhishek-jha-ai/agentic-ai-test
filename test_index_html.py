@@ -265,3 +265,36 @@ def test_index_html_has_about_section():
     assert '<section id="about"' in content.lower(), 'index.html missing about section with id="about".'
     assert 'software engineer' in content.lower(), 'About section should mention software engineer.'
     assert 'portfolio' in content.lower(), 'About section should mention portfolio.'
+
+
+# --- Theme Toggle Tests ---
+def test_index_html_has_theme_toggle_button():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for theme toggle button with id
+    assert 'id="theme-toggle"' in content, 'index.html missing theme toggle button with id="theme-toggle".'
+    # Check for toggle switch element
+    assert 'class="toggle-switch"' in content, 'index.html missing toggle switch element with class="toggle-switch".'
+    # Check for toggle thumb element
+    assert 'class="toggle-thumb"' in content, 'index.html missing toggle thumb element with class="toggle-thumb".'
+    # Check for aria-label for accessibility
+    assert 'aria-label="Toggle dark and light mode"' in content, 'Theme toggle button missing aria-label for accessibility.'
+
+def test_index_html_has_dark_and_light_theme_css_variables():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for CSS variables for light theme
+    assert '--primary-bg: #f9f9f9' in content, 'Light theme CSS variable --primary-bg missing or incorrect.'
+    assert '--primary-text: #222' in content, 'Light theme CSS variable --primary-text missing or incorrect.'
+    # Check for CSS variables for dark theme
+    assert 'body[data-theme="dark"]' in content, 'Dark theme CSS selector missing.'
+    assert '--primary-bg: #181a1b' in content, 'Dark theme CSS variable --primary-bg missing or incorrect.'
+    assert '--primary-text: #f3f3f3' in content, 'Dark theme CSS variable --primary-text missing or incorrect.'
+
+def test_index_html_theme_toggle_script_present():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for theme toggle script presence
+    assert 'const themeToggle = document.getElementById(' in content, 'Theme toggle script missing or incomplete.'
+    assert 'function toggleTheme()' in content, 'Theme toggle function missing in script.'
+    assert 'themeToggle.addEventListener(' in content, 'Theme toggle event listener missing in script.'

@@ -5,24 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personal Portfolio</title>
   <style>
+    :root {
+      --primary-bg: #f9f9f9;
+      --primary-text: #222;
+      --nav-bg: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+      --header-bg: #222;
+      --header-text: #fff;
+      --main-bg: #fff;
+      --main-text: #222;
+      --card-bg: #f0f0f0;
+      --card-title: #222;
+      --card-desc: #555;
+      --link: #0066cc;
+      --link-hover: #004999;
+      --contact-link: #222;
+      --nav-link: #fff;
+      --nav-link-hover-bg: rgba(255,255,255,0.3);
+      --nav-link-hover-color: #fff;
+      --nav-shadow: 0 4px 12px rgba(38, 50, 56, 0.3);
+      --nav-hover-shadow: 0 6px 20px rgba(38, 50, 56, 0.5);
+      --card-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      --card-hover-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      --main-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      --toggle-bg: #e0e0e0;
+      --toggle-thumb: #fff;
+      --toggle-border: #bbb;
+    }
+    body[data-theme="dark"] {
+      --primary-bg: #181a1b;
+      --primary-text: #f3f3f3;
+      --nav-bg: linear-gradient(90deg, #232526 0%, #414345 100%);
+      --header-bg: #232526;
+      --header-text: #f3f3f3;
+      --main-bg: #232526;
+      --main-text: #f3f3f3;
+      --card-bg: #23272e;
+      --card-title: #f3f3f3;
+      --card-desc: #b0b0b0;
+      --link: #7abaff;
+      --link-hover: #4a90e2;
+      --contact-link: #f3f3f3;
+      --nav-link: #f3f3f3;
+      --nav-link-hover-bg: rgba(255,255,255,0.08);
+      --nav-link-hover-color: #fff;
+      --nav-shadow: 0 4px 12px rgba(0,0,0,0.7);
+      --nav-hover-shadow: 0 6px 20px rgba(0,0,0,0.8);
+      --card-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      --card-hover-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      --main-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      --toggle-bg: #444;
+      --toggle-thumb: #232526;
+      --toggle-border: #666;
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f9f9f9;
-      color: #222;
+      background: var(--primary-bg);
+      color: var(--primary-text);
+      transition: background 0.3s, color 0.3s;
     }
     nav {
-      background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-      box-shadow: 0 4px 12px rgba(38, 50, 56, 0.3);
+      background: var(--nav-bg);
+      box-shadow: var(--nav-shadow);
       padding: 0.75rem 0;
       position: sticky;
       top: 0;
       z-index: 100;
-      transition: box-shadow 0.3s ease;
+      transition: box-shadow 0.3s ease, background 0.3s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
     }
     nav:hover {
-      box-shadow: 0 6px 20px rgba(38, 50, 56, 0.5);
+      box-shadow: var(--nav-hover-shadow);
     }
     nav ul {
       list-style: none;
@@ -37,7 +94,7 @@
     }
     nav ul li a {
       text-decoration: none;
-      color: #fff;
+      color: var(--nav-link);
       font-weight: 600;
       padding: 0.5rem 1rem;
       border-radius: 6px;
@@ -47,25 +104,72 @@
       -webkit-backdrop-filter: blur(6px);
     }
     nav ul li a:hover, nav ul li a:focus {
-      background: rgba(255, 255, 255, 0.3);
-      color: #fff;
+      background: var(--nav-link-hover-bg);
+      color: var(--nav-link-hover-color);
       transform: scale(1.1);
       box-shadow: 0 4px 12px rgba(255, 255, 255, 0.5);
       outline: none;
     }
+    /* Theme Toggle Button */
+    .theme-toggle {
+      margin-left: 1.5rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      font-size: 1rem;
+      color: var(--nav-link);
+      background: none;
+      border: none;
+      outline: none;
+      position: relative;
+    }
+    .toggle-switch {
+      width: 44px;
+      height: 24px;
+      background: var(--toggle-bg);
+      border-radius: 12px;
+      border: 1.5px solid var(--toggle-border);
+      margin-left: 0.5rem;
+      position: relative;
+      transition: background 0.3s, border 0.3s;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: var(--toggle-thumb);
+      border-radius: 50%;
+      transition: left 0.3s, background 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    .toggle-switch[data-checked="true"] .toggle-thumb {
+      left: 22px;
+    }
+    .toggle-switch[data-checked="true"] {
+      background: #7abaff;
+      border-color: #4a90e2;
+    }
     header {
-      background: #222;
-      color: #fff;
+      background: var(--header-bg);
+      color: var(--header-text);
       padding: 2rem 1rem;
       text-align: center;
+      transition: background 0.3s, color 0.3s;
     }
     main {
       max-width: 800px;
       margin: 2rem auto;
       padding: 1rem;
-      background: #fff;
+      background: var(--main-bg);
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: var(--main-shadow);
+      color: var(--main-text);
+      transition: background 0.3s, color 0.3s;
     }
     h1 {
       margin: 0 0 0.5rem 0;
@@ -84,39 +188,50 @@
       margin-top: 1rem;
     }
     .project-card {
-      background: #f0f0f0;
+      background: var(--card-bg);
       border-radius: 8px;
       padding: 1rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: var(--card-shadow);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: box-shadow 0.3s ease;
+      transition: box-shadow 0.3s ease, background 0.3s;
     }
     .project-card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: var(--card-hover-shadow);
     }
     .project-title {
       font-size: 1.2rem;
       margin: 0 0 0.5rem 0;
-      color: #222;
+      color: var(--card-title);
+      transition: color 0.3s;
     }
     .project-description {
       flex-grow: 1;
       font-size: 0.95rem;
-      color: #555;
+      color: var(--card-desc);
       margin-bottom: 1rem;
+      transition: color 0.3s;
     }
     .project-link {
       text-decoration: none;
-      color: #0066cc;
+      color: var(--link);
       font-weight: 600;
       align-self: flex-start;
       transition: color 0.2s ease;
     }
     .project-link:hover, .project-link:focus {
-      color: #004999;
+      color: var(--link-hover);
       text-decoration: underline;
+    }
+    /* Contact Section Links */
+    #contact a {
+      color: var(--contact-link);
+      text-decoration: underline;
+      transition: color 0.3s;
+    }
+    #contact a:hover, #contact a:focus {
+      color: var(--link-hover);
     }
   </style>
 </head>
@@ -128,6 +243,12 @@
       <li><a href="#projects">Projects</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark and light mode">
+      <span id="theme-toggle-label">Light</span>
+      <span class="toggle-switch" id="toggle-switch" data-checked="false">
+        <span class="toggle-thumb"></span>
+      </span>
+    </button>
   </nav>
   <header id="home">
     <h1>Welcome to My Portfolio</h1>
@@ -168,16 +289,62 @@
       <p>You can reach me via the following methods:</p>
       <ul style="list-style:none; padding:0; margin:1rem 0 0 0;">
         <li style="margin-bottom:0.5rem;">
-          <strong>Email:</strong> <a href="mailto:your.email@example.com" style="color:#222; text-decoration:underline;">your.email@example.com</a>
+          <strong>Email:</strong> <a href="mailto:your.email@example.com">your.email@example.com</a>
         </li>
         <li style="margin-bottom:0.5rem;">
-          <strong>GitHub:</strong> <a href="https://github.com/yourusername" target="_blank" rel="noopener" style="color:#222; text-decoration:underline;">github.com/yourusername</a>
+          <strong>GitHub:</strong> <a href="https://github.com/yourusername" target="_blank" rel="noopener">github.com/yourusername</a>
         </li>
         <li>
-          <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener" style="color:#222; text-decoration:underline;">linkedin.com/in/yourusername</a>
+          <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">linkedin.com/in/yourusername</a>
         </li>
       </ul>
     </section>
   </main>
+  <script>
+    // Theme toggle logic
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleLabel = document.getElementById('theme-toggle-label');
+    const toggleSwitch = document.getElementById('toggle-switch');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const THEME_KEY = 'portfolio-theme';
+
+    function setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        themeToggleLabel.textContent = 'Dark';
+        toggleSwitch.setAttribute('data-checked', 'true');
+      } else {
+        themeToggleLabel.textContent = 'Light';
+        toggleSwitch.setAttribute('data-checked', 'false');
+      }
+    }
+
+    function getSavedTheme() {
+      return localStorage.getItem(THEME_KEY);
+    }
+
+    function saveTheme(theme) {
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.body.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+      saveTheme(newTheme);
+    }
+
+    // Initialize theme on page load
+    (function() {
+      const savedTheme = getSavedTheme();
+      if (savedTheme) {
+        setTheme(savedTheme);
+      } else {
+        setTheme(prefersDark ? 'dark' : 'light');
+      }
+    })();
+
+    themeToggle.addEventListener('click', toggleTheme);
+  </script>
 </body>
 </html>
