@@ -33,7 +33,6 @@ def test_index_html_has_title():
     parser.feed(content)
     assert parser.title is not None and parser.title != '', 'index.html missing <title> or it is empty.'
 
-
 # --- Navigation Bar Tests ---
 from html.parser import HTMLParser
 
@@ -83,15 +82,35 @@ def test_index_html_navbar_has_links():
         assert link['href'] is not None and link['href'].startswith('#'), 'Navigation links should use anchor hrefs.'
         assert link['text'], 'Navigation link text should not be empty.'
 
-# --- Premium Navigation Tests ---
-def test_index_html_navbar_has_premium_gradient():
+# --- Pink Navigation Bar Tests ---
+def test_index_html_navbar_has_pink_gradient_and_white_text():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
-    # Check for linear-gradient in nav style
-    assert 'nav {' in content
-    assert 'linear-gradient' in content or 'background: linear-gradient' in content, 'Navigation bar should have a premium gradient background.'
-    assert '#6a11cb' in content and '#2575fc' in content, 'Navigation bar gradient colors missing.'
+    # Check for nav background with pink gradient
+    assert 'nav {' in content, 'Navigation bar CSS not found.'
+    assert 'linear-gradient' in content, 'Navigation bar should use a gradient background.'
+    # Check for pink color codes in the gradient
+    pinks = ['#ff69b4', '#ff1493', 'pink']
+    found_pink = any(pink in content.lower() for pink in pinks)
+    assert found_pink, 'Navigation bar gradient should use pink colors.'
+    # Check for nav link color white
+    nav_link_white = False
+    for line in content.splitlines():
+        if 'nav ul li a' in line and '{' in line:
+            # Look for color: #fff or color: white in the block
+            block = []
+            block.append(line)
+            for l in content.splitlines()[content.splitlines().index(line)+1:]:
+                block.append(l)
+                if '}' in l:
+                    break
+            block_str = '\n'.join(block).lower()
+            if 'color: #fff' in block_str or 'color: white' in block_str:
+                nav_link_white = True
+                break
+    assert nav_link_white, 'Navigation bar links should have white text.'
 
+# --- Premium Navigation Tests ---
 def test_index_html_navbar_has_box_shadow():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -183,7 +202,6 @@ def test_index_html_contact_section_has_email_and_links():
     has_linkedin = any(l['href'] and 'linkedin' in l['href'].lower() for l in parser.links)
     assert has_github or has_linkedin, 'Contact section should have a GitHub or LinkedIn link placeholder.'
 
-
 # --- Projects Section Tests ---
 from html.parser import HTMLParser
 
@@ -243,7 +261,6 @@ def test_index_html_has_projects_section():
         assert project['description'], 'Each project card should have a description.'
         assert project['link'] is not None, 'Each project card should have a link.'
         assert project['link'].startswith('#') or project['link'].startswith('http'), 'Project link should be a valid URL or anchor.'
-
 
 # --- Header Section Tests ---
 def test_index_html_has_header_section():
