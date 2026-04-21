@@ -33,7 +33,6 @@ def test_index_html_has_title():
     parser.feed(content)
     assert parser.title is not None and parser.title != '', 'index.html missing <title> or it is empty.'
 
-
 # --- Navigation Bar Tests ---
 from html.parser import HTMLParser
 
@@ -83,6 +82,32 @@ def test_index_html_navbar_has_links():
         assert link['href'] is not None and link['href'].startswith('#'), 'Navigation links should use anchor hrefs.'
         assert link['text'], 'Navigation link text should not be empty.'
 
+# --- Pink Navigation Bar Tests ---
+def test_index_html_navbar_is_pink_gradient():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for nav background with pink gradient
+    assert 'nav {' in content, 'No nav CSS block found.'
+    assert 'linear-gradient' in content, 'Navigation bar should use a linear-gradient background.'
+    # Check for pink color codes in the gradient
+    assert '#ff69b4' in content.lower() or '#ff1493' in content.lower(), 'Navigation bar gradient should include pink colors.'
+    # Check that the gradient direction is present
+    assert '90deg' in content or 'to right' in content or 'to left' in content, 'Navigation bar gradient should specify direction.'
+
+def test_index_html_navbar_links_are_white():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check nav ul li a color is white
+    found = False
+    for line in content.splitlines():
+        if 'nav ul li a' in line and '{' in line:
+            found = True
+        if found and 'color:' in line:
+            assert '#fff' in line.replace(' ', '').lower() or 'white' in line.replace(' ', '').lower(), 'Navigation link text should be white.'
+            break
+    else:
+        assert False, 'Could not find nav ul li a color definition.'
+
 # --- Premium Navigation Tests ---
 def test_index_html_navbar_has_premium_gradient():
     with open('index.html', 'r', encoding='utf-8') as f:
@@ -90,7 +115,7 @@ def test_index_html_navbar_has_premium_gradient():
     # Check for linear-gradient in nav style
     assert 'nav {' in content
     assert 'linear-gradient' in content or 'background: linear-gradient' in content, 'Navigation bar should have a premium gradient background.'
-    assert '#6a11cb' in content and '#2575fc' in content, 'Navigation bar gradient colors missing.'
+    assert '#6a11cb' in content or '#2575fc' in content or '#ff69b4' in content or '#ff1493' in content, 'Navigation bar gradient colors missing.'
 
 def test_index_html_navbar_has_box_shadow():
     with open('index.html', 'r', encoding='utf-8') as f:
@@ -183,7 +208,6 @@ def test_index_html_contact_section_has_email_and_links():
     has_linkedin = any(l['href'] and 'linkedin' in l['href'].lower() for l in parser.links)
     assert has_github or has_linkedin, 'Contact section should have a GitHub or LinkedIn link placeholder.'
 
-
 # --- Projects Section Tests ---
 from html.parser import HTMLParser
 
@@ -243,7 +267,6 @@ def test_index_html_has_projects_section():
         assert project['description'], 'Each project card should have a description.'
         assert project['link'] is not None, 'Each project card should have a link.'
         assert project['link'].startswith('#') or project['link'].startswith('http'), 'Project link should be a valid URL or anchor.'
-
 
 # --- Header Section Tests ---
 def test_index_html_has_header_section():
