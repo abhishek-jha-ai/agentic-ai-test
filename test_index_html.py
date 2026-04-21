@@ -308,8 +308,8 @@ def test_index_html_has_projects_section():
     parser = ProjectsSectionParser()
     parser.feed(content)
     assert parser.projects_section_found, 'index.html missing projects section with id="projects".'
-    # At least 3 project cards
-    assert len(parser.project_cards) >= 3, 'Projects section should have at least 3 project cards.'
+    # At least 4 project cards (enhanced requirement)
+    assert len(parser.project_cards) >= 4, 'Projects section should have at least 4 project cards.'
     for project in parser.project_cards:
         assert project['title'], 'Each project card should have a title.'
         assert project['description'], 'Each project card should have a description.'
