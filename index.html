@@ -13,16 +13,16 @@
       color: #222;
     }
     nav {
-      background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-      box-shadow: 0 4px 12px rgba(38, 50, 56, 0.3);
-      padding: 0.75rem 0;
+      background: #000000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+      padding: 1rem 0;
       position: sticky;
       top: 0;
       z-index: 100;
       transition: box-shadow 0.3s ease;
     }
     nav:hover {
-      box-shadow: 0 6px 20px rgba(38, 50, 56, 0.5);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9);
     }
     nav ul {
       list-style: none;
@@ -56,8 +56,36 @@
     header {
       background: #222;
       color: #fff;
-      padding: 2rem 1rem;
+      padding: 3rem 1rem 4rem 1rem;
       text-align: center;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      overflow: hidden;
+      border-radius: 0 0 20px 20px;
+    }
+    header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.8rem;
+      font-weight: 700;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+    }
+    header p {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 400;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+    header .hero-image {
+      position: absolute;
+      right: 2rem;
+      bottom: 1rem;
+      max-width: 250px;
+      max-height: 250px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      opacity: 0.9;
+      user-select: none;
+      pointer-events: none;
     }
     main {
       max-width: 800px;
@@ -132,6 +160,7 @@
   <header id="home">
     <h1>Welcome to My Portfolio</h1>
     <p>Discover my projects and experience</p>
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=250&q=80" alt="Premium Hero" class="hero-image" />
   </header>
   <main>
     <h2>Hello!</h2>
