@@ -1,6 +1,16 @@
 import os
 from html.parser import HTMLParser
 
+def test_index_html_exists():
+    assert os.path.exists('index.html'), 'index.html does not exist.'
+
+def test_index_html_has_html_structure():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert '<html' in content.lower(), 'index.html missing <html> tag.'
+    assert '<head' in content.lower(), 'index.html missing <head> tag.'
+    assert '<body' in content.lower(), 'index.html missing <body> tag.'
+
 class TitleParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -16,23 +26,12 @@ class TitleParser(HTMLParser):
         if self.in_title:
             self.title = data.strip()
 
-def test_index_html_exists():
-    assert os.path.exists('index.html'), 'index.html does not exist.'
-
-def test_index_html_has_html_structure():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    assert '<html' in content.lower(), 'index.html missing <html> tag.'
-    assert '<head' in content.lower(), 'index.html missing <head> tag.'
-    assert '<body' in content.lower(), 'index.html missing <body> tag.'
-
 def test_index_html_has_title():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
     parser = TitleParser()
     parser.feed(content)
     assert parser.title is not None and parser.title != '', 'index.html missing <title> or it is empty.'
-
 
 # --- Navigation Bar Tests ---
 from html.parser import HTMLParser
@@ -119,9 +118,38 @@ def test_index_html_navbar_links_have_blur_effect():
     # Check for backdrop-filter blur on nav links
     assert 'backdrop-filter: blur(6px)' in content or '-webkit-backdrop-filter: blur(6px)' in content, 'Navigation links should have a blur effect for premium look.'
 
-# --- Contact Section Tests ---
-from html.parser import HTMLParser
+# --- Premium Hero Section Tests ---
+def test_index_html_hero_section_has_gradient():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for header with gradient background
+    assert 'header {' in content, 'index.html missing header CSS.'
+    assert 'linear-gradient' in content or 'background: linear-gradient' in content, 'Hero section should have a premium gradient background.'
+    assert '#6a11cb' in content and '#2575fc' in content, 'Hero section gradient colors missing.'
 
+def test_index_html_hero_section_has_box_shadow():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for box-shadow in header style
+    assert 'header {' in content, 'index.html missing header CSS.'
+    assert 'box-shadow' in content, 'Hero section should have a box-shadow for premium look.'
+
+def test_index_html_hero_section_has_premium_text_shadow():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for text-shadow in header h1 or p
+    assert 'header h1' in content, 'index.html missing header h1 CSS.'
+    assert 'text-shadow' in content, 'Hero section should have text-shadow for premium look.'
+
+def test_index_html_hero_section_has_pulse_animation():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for pulse animation in header
+    assert '@keyframes pulse' in content, 'Hero section should have a pulse animation.'
+    assert 'header::before' in content, 'Hero section should have a ::before element for premium effect.'
+    assert 'radial-gradient' in content, 'Hero section should use a radial-gradient for premium effect.'
+
+# --- Contact Section Tests ---
 class ContactSectionParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -183,10 +211,7 @@ def test_index_html_contact_section_has_email_and_links():
     has_linkedin = any(l['href'] and 'linkedin' in l['href'].lower() for l in parser.links)
     assert has_github or has_linkedin, 'Contact section should have a GitHub or LinkedIn link placeholder.'
 
-
 # --- Projects Section Tests ---
-from html.parser import HTMLParser
-
 class ProjectsSectionParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -243,7 +268,6 @@ def test_index_html_has_projects_section():
         assert project['description'], 'Each project card should have a description.'
         assert project['link'] is not None, 'Each project card should have a link.'
         assert project['link'].startswith('#') or project['link'].startswith('http'), 'Project link should be a valid URL or anchor.'
-
 
 # --- Header Section Tests ---
 def test_index_html_has_header_section():
