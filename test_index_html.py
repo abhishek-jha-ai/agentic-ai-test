@@ -1,6 +1,16 @@
 import os
 from html.parser import HTMLParser
 
+def test_index_html_exists():
+    assert os.path.exists('index.html'), 'index.html does not exist.'
+
+def test_index_html_has_html_structure():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    assert '<html' in content.lower(), 'index.html missing <html> tag.'
+    assert '<head' in content.lower(), 'index.html missing <head> tag.'
+    assert '<body' in content.lower(), 'index.html missing <body> tag.'
+
 class TitleParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -16,16 +26,6 @@ class TitleParser(HTMLParser):
         if self.in_title:
             self.title = data.strip()
 
-def test_index_html_exists():
-    assert os.path.exists('index.html'), 'index.html does not exist.'
-
-def test_index_html_has_html_structure():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    assert '<html' in content.lower(), 'index.html missing <html> tag.'
-    assert '<head' in content.lower(), 'index.html missing <head> tag.'
-    assert '<body' in content.lower(), 'index.html missing <body> tag.'
-
 def test_index_html_has_title():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -34,8 +34,6 @@ def test_index_html_has_title():
     assert parser.title is not None and parser.title != '', 'index.html missing <title> or it is empty.'
 
 # --- Navigation Bar Tests ---
-from html.parser import HTMLParser
-
 class NavBarParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -82,21 +80,43 @@ def test_index_html_navbar_has_links():
         assert link['href'] is not None and link['href'].startswith('#'), 'Navigation links should use anchor hrefs.'
         assert link['text'], 'Navigation link text should not be empty.'
 
-# --- Premium Navigation Tests ---
-def test_index_html_navbar_color_black():
+# --- Navigation Color Tests ---
+def test_index_html_navbar_background_pink():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
-    # Check nav background is black
+    # Check nav background is pink
     assert 'nav {' in content
-    assert 'background: #000' in content or 'background: #000000' in content, 'Navigation bar background should be black.'
+    # Accepts background: pink; or background: pink;
+    found = False
+    for line in content.splitlines():
+        if line.strip().startswith('nav {'):
+            found = True
+        if found and 'background:' in line:
+            if 'pink' in line:
+                return
+            # Accept background: #ffc0cb (hex for pink)
+            if '#ffc0cb' in line.lower():
+                return
+        if found and '}' in line:
+            break
+    assert False, 'Navigation bar background should be pink.'
 
 def test_index_html_navbar_text_white():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
     # Check nav link color is white
-    assert 'nav ul li a' in content
-    assert 'color: #fff' in content or 'color: white' in content, 'Navigation bar link text should be white.'
+    found = False
+    for line in content.splitlines():
+        if 'nav ul li a' in line:
+            found = True
+        if found and 'color:' in line:
+            if 'white' in line or '#fff' in line.lower():
+                return
+        if found and '}' in line:
+            break
+    assert False, 'Navigation bar link text should be white.'
 
+# --- Premium Navigation Tests ---
 def test_index_html_navbar_has_box_shadow():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -125,8 +145,6 @@ def test_index_html_navbar_links_have_blur_effect():
     assert 'backdrop-filter: blur(6px)' in content or '-webkit-backdrop-filter: blur(6px)' in content, 'Navigation links should have a blur effect for premium look.'
 
 # --- Hero Section (Header) Tests ---
-from html.parser import HTMLParser
-
 class HeaderImageParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -193,8 +211,6 @@ def test_index_html_has_about_section():
     assert 'portfolio' in content.lower(), 'About section should mention portfolio.'
 
 # --- Contact Section Tests ---
-from html.parser import HTMLParser
-
 class ContactSectionParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -257,8 +273,6 @@ def test_index_html_contact_section_has_email_and_links():
     assert has_github or has_linkedin, 'Contact section should have a GitHub or LinkedIn link placeholder.'
 
 # --- Projects Section Tests ---
-from html.parser import HTMLParser
-
 class ProjectsSectionParser(HTMLParser):
     def __init__(self):
         super().__init__()
