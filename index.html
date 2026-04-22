@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personal Portfolio</title>
   <style>
+    .hero-image {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      margin-bottom: 1.5rem;
+      margin-top: 0.5rem;
+      opacity: 0.9;
+      border: 4px solid #fff;
+      position: relative;
+      z-index: 1;
+      background: #fff;
+      transition: box-shadow 0.3s, opacity 0.3s;
+    }
+    .hero-image:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+      opacity: 1;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -54,38 +74,46 @@
       outline: none;
     }
     header {
-      background: #222;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') no-repeat center center/cover;
       color: #fff;
-      padding: 3rem 1rem 4rem 1rem;
+      padding: 6rem 1rem 6rem 1rem;
       text-align: center;
       position: relative;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       overflow: hidden;
       border-radius: 0 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 320px;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+      border-radius: 0 0 20px 20px;
     }
     header h1 {
       margin: 0 0 0.5rem 0;
-      font-size: 2.8rem;
+      font-size: 3rem;
       font-weight: 700;
       text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+      position: relative;
+      z-index: 1;
     }
     header p {
       margin: 0;
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       font-weight: 400;
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-    }
-    header .hero-image {
-      position: absolute;
-      right: 2rem;
-      bottom: 1rem;
-      max-width: 250px;
-      max-height: 250px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      opacity: 0.9;
-      user-select: none;
-      pointer-events: none;
+      position: relative;
+      z-index: 1;
     }
     main {
       max-width: 800px;
@@ -157,10 +185,13 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
-  <header id="home">
+  <header id="home" style="background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80') no-repeat center center/cover;">
+    <img 
+      class="hero-image" 
+      src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=400&q=80" 
+      alt="Portrait of the portfolio owner">
     <h1>Welcome to My Portfolio</h1>
     <p>Discover my projects and experience</p>
-    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=250&q=80" alt="Premium Hero" class="hero-image" />
   </header>
   <main>
     <h2>Hello!</h2>

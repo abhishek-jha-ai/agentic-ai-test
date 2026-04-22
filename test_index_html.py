@@ -329,3 +329,35 @@ def test_index_html_has_projects_section():
         assert project['description'], 'Each project card should have a description.'
         assert project['link'] is not None, 'Each project card should have a link.'
         assert project['link'].startswith('#') or project['link'].startswith('http'), 'Project link should be a valid URL or anchor.'
+
+# --- Hero Section Background Image and Text Placement Tests ---
+def test_index_html_header_has_background_image():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check header has background image style
+    assert '<header' in content.lower(), 'index.html missing <header> section.'
+    # Look for background image url in header style
+    header_start = content.lower().find('<header')
+    header_end = content.lower().find('</header>', header_start)
+    header_content = content[header_start:header_end]
+    assert 'background:' in header_content, 'Header missing background style.'
+    assert 'url(' in header_content or 'background-image' in header_content, 'Header background should include an image URL.'
+
+def test_index_html_header_text_is_readable_and_positioned():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check header contains h1 and p with text
+    header_start = content.lower().find('<header')
+    header_end = content.lower().find('</header>', header_start)
+    header_content = content[header_start:header_end]
+    assert '<h1>' in header_content.lower(), 'Header missing <h1> tag.'
+    assert '<p>' in header_content.lower(), 'Header missing <p> tag.'
+    # Check that header text is not empty
+    h1_start = header_content.lower().find('<h1>') + 4
+    h1_end = header_content.lower().find('</h1>', h1_start)
+    h1_text = header_content[h1_start:h1_end].strip()
+    assert h1_text != '', 'Header <h1> text should not be empty.'
+    p_start = header_content.lower().find('<p>') + 3
+    p_end = header_content.lower().find('</p>', p_start)
+    p_text = header_content[p_start:p_end].strip()
+    assert p_text != '', 'Header <p> text should not be empty.'
