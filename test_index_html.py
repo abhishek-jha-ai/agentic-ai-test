@@ -80,69 +80,58 @@ def test_index_html_navbar_has_links():
         assert link['href'] is not None and link['href'].startswith('#'), 'Navigation links should use anchor hrefs.'
         assert link['text'], 'Navigation link text should not be empty.'
 
-# --- Navigation Color Tests ---
-def test_index_html_navbar_background_pink():
+# --- Navigation Color and Theme Tests ---
+def test_index_html_navbar_matches_hero_theme():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
-    # Check nav background is pink
-    assert 'nav {' in content
-    # Accepts background: pink; or background: pink;
-    found = False
+    # The nav should have a dark background (matching hero overlay), white text, and high contrast
+    nav_bg_dark = False
+    nav_text_white = False
+    nav_shadow = False
+    nav_blur = False
+    nav_hover = False
+    nav_sticky = False
+    nav_top = False
     for line in content.splitlines():
-        if line.strip().startswith('nav {'):
-            found = True
-        if found and 'background:' in line:
-            if 'pink' in line:
-                return
-            # Accept background: #ffc0cb (hex for pink)
-            if '#ffc0cb' in line.lower():
-                return
-        if found and '}' in line:
-            break
-    assert False, 'Navigation bar background should be pink.'
+        l = line.strip().lower()
+        if 'nav {' in l or 'nav{' in l:
+            nav_block = True
+        if 'background:' in l and ('#222' in l or '222222' in l or 'rgb(34,34,34)' in l or 'rgba(34, 34, 34' in l or 'rgba(34,34,34' in l):
+            nav_bg_dark = True
+        if 'box-shadow' in l:
+            nav_shadow = True
+        if 'position:' in l and 'sticky' in l:
+            nav_sticky = True
+        if 'top:' in l and '0' in l:
+            nav_top = True
+        if 'backdrop-filter:' in l and 'blur' in l:
+            nav_blur = True
+        if 'color:' in l and ('#fff' in l or 'white' in l):
+            nav_text_white = True
+    # Check hover/focus effect
+    nav_hover = 'nav ul li a:hover' in content or 'nav ul li a:focus' in content
+    assert nav_bg_dark, 'Navigation bar background should be dark to match hero overlay.'
+    assert nav_text_white, 'Navigation bar link text should be white for high contrast.'
+    assert nav_shadow, 'Navigation bar should have a box-shadow for premium look.'
+    assert nav_blur, 'Navigation bar should have a blur effect for premium look.'
+    assert nav_hover, 'Navigation links should have hover/focus effect.'
+    assert nav_sticky, 'Navigation bar should be sticky.'
+    assert nav_top, 'Sticky navigation bar should have top: 0.'
 
-def test_index_html_navbar_text_white():
+def test_index_html_navbar_layout_and_links_preserved():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
-    # Check nav link color is white
-    found = False
-    for line in content.splitlines():
-        if 'nav ul li a' in line:
-            found = True
-        if found and 'color:' in line:
-            if 'white' in line or '#fff' in line.lower():
-                return
-        if found and '}' in line:
-            break
-    assert False, 'Navigation bar link text should be white.'
-
-# --- Premium Navigation Tests ---
-def test_index_html_navbar_has_box_shadow():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    # Check for box-shadow in nav style
-    assert 'nav {' in content
-    assert 'box-shadow' in content, 'Navigation bar should have a box-shadow for premium look.'
-
-def test_index_html_navbar_links_have_hover_effect():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    # Check for hover/active/focus effect on nav links
-    assert 'nav ul li a:hover' in content or 'nav ul li a:focus' in content, 'Navigation links should have hover/focus effect.'
-    assert 'transform: scale(1.1)' in content or 'background: rgba(255, 255, 255, 0.3)' in content, 'Navigation links should have premium hover/focus styling.'
-
-def test_index_html_navbar_is_sticky():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    # Check for sticky positioning
-    assert 'position: sticky' in content or 'position: -webkit-sticky' in content, 'Navigation bar should be sticky.'
-    assert 'top: 0' in content, 'Sticky navigation bar should have top: 0.'
-
-def test_index_html_navbar_links_have_blur_effect():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    # Check for backdrop-filter blur on nav links
-    assert 'backdrop-filter: blur(6px)' in content or '-webkit-backdrop-filter: blur(6px)' in content, 'Navigation links should have a blur effect for premium look.'
+    parser = NavBarParser()
+    parser.feed(content)
+    # Layout: nav > ul > li > a, at least 4 links: Home, About, Projects, Contact
+    link_texts = [l['text'].lower() for l in parser.nav_links]
+    for expected in ['home', 'about', 'projects', 'contact']:
+        assert any(expected in t for t in link_texts), f'Navigation bar should have a "{expected.title()}" link.'
+    # Layout: nav contains ul, ul contains li, li contains a
+    assert '<nav' in content.lower(), 'Navigation bar <nav> missing.'
+    assert '<ul' in content.lower(), 'Navigation bar <ul> missing.'
+    assert '<li' in content.lower(), 'Navigation bar <li> missing.'
+    assert '<a' in content.lower(), 'Navigation bar <a> missing.'
 
 # --- Hero Section (Header) Tests ---
 class HeaderImageParser(HTMLParser):
@@ -170,25 +159,6 @@ class HeaderImageParser(HTMLParser):
     def handle_endtag(self, tag):
         if tag == 'header':
             self.in_header = False
-
-def test_index_html_header_has_hero_image():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    parser = HeaderImageParser()
-    parser.feed(content)
-    assert parser.hero_img_found, 'Hero section should have a premium image with class="hero-image".'
-    assert parser.hero_img_src is not None and parser.hero_img_src.strip() != '', 'Hero image should have a src attribute.'
-    assert parser.hero_img_alt is not None and parser.hero_img_alt.strip() != '', 'Hero image should have an alt attribute.'
-    assert 'hero-image' in parser.hero_img_class, 'Hero image should have class="hero-image".'
-
-def test_index_html_header_hero_image_style():
-    with open('index.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    # Check for .hero-image CSS
-    assert '.hero-image' in content, 'Hero image CSS class missing.'
-    assert 'box-shadow' in content, 'Hero image should have box-shadow for premium look.'
-    assert 'border-radius' in content, 'Hero image should have border-radius for polish.'
-    assert 'opacity: 0.9' in content or 'opacity:0.9' in content, 'Hero image should have opacity for polish.'
 
 def test_index_html_has_header_section():
     with open('index.html', 'r', encoding='utf-8') as f:

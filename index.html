@@ -13,13 +13,15 @@
       color: #222;
     }
     nav {
-      background: pink;
+      background: rgba(34, 34, 34, 0.85);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
       padding: 1rem 0;
       position: sticky;
       top: 0;
       z-index: 100;
       transition: box-shadow 0.3s ease;
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
     }
     nav:hover {
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9);
@@ -54,14 +56,18 @@
       outline: none;
     }
     header {
-      background: #222;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
       color: #fff;
-      padding: 3rem 1rem 4rem 1rem;
+      padding: 6rem 1rem 6rem 1rem;
       text-align: center;
       position: relative;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      overflow: hidden;
+      box-shadow: inset 0 0 0 1000px rgba(34, 34, 34, 0.6);
       border-radius: 0 0 20px 20px;
+      overflow: hidden;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     header h1 {
       margin: 0 0 0.5rem 0;
@@ -74,18 +80,6 @@
       font-size: 1.3rem;
       font-weight: 400;
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-    }
-    header .hero-image {
-      position: absolute;
-      right: 2rem;
-      bottom: 1rem;
-      max-width: 250px;
-      max-height: 250px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      opacity: 0.9;
-      user-select: none;
-      pointer-events: none;
     }
     main {
       max-width: 800px;
@@ -160,7 +154,6 @@
   <header id="home">
     <h1>Welcome to My Portfolio</h1>
     <p>Discover my projects and experience</p>
-    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=250&q=80" alt="Premium Hero" class="hero-image" />
   </header>
   <main>
     <h2>Hello!</h2>
