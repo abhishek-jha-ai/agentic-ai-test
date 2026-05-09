@@ -94,9 +94,9 @@ def test_index_html_navbar_matches_hero_theme():
     nav_top = False
     for line in content.splitlines():
         l = line.strip().lower()
-        if l.startswith('nav {') or l.startswith('nav{'):
+        if 'nav {' in l or 'nav{' in l:
             nav_block = True
-        if 'background:' in l and ('#222' in l or '222222' in l or 'rgb(34,34,34)' in l or 'rgba(34,34,34' in l):
+        if 'background:' in l and ('#222' in l or '222222' in l or 'rgb(34,34,34)' in l or 'rgba(34, 34, 34' in l or 'rgba(34,34,34' in l):
             nav_bg_dark = True
         if 'box-shadow' in l:
             nav_shadow = True
