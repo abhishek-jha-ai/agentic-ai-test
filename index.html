@@ -4,7 +4,103 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personal Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
+    /* Contact/Footer Modern Styles */
+    .contact-card {
+      max-width: 540px;
+      margin: 2.5rem auto 0 auto;
+      background: linear-gradient(120deg, #f1f5f9 0%, #e0e7ef 100%);
+      border-radius: 20px;
+      box-shadow: 0 6px 32px 0 rgba(31, 38, 135, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.04);
+      padding: 2.2rem 2rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      border: 1.5px solid #e0e7ef;
+      position: relative;
+      z-index: 1;
+    }
+    .contact-card h2 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+      text-align: center;
+    }
+    .contact-card p {
+      color: #334155;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      font-size: 1.08rem;
+    }
+    .contact-methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem 2rem;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+    }
+    .contact-method {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(56,189,248,0.06);
+      padding: 0.7rem 1.2rem;
+      min-width: 210px;
+      transition: box-shadow 0.2s, border 0.2s;
+      border: 1.5px solid #e0e7ef;
+      font-size: 1.05rem;
+    }
+    .contact-method:focus-within, .contact-method:hover {
+      box-shadow: 0 4px 16px rgba(56,189,248,0.13);
+      border: 1.5px solid #38bdf8;
+    }
+    .contact-icon {
+      font-size: 1.35rem;
+      color: #0ea5e9;
+      background: linear-gradient(120deg, #38bdf8 0%, #0ea5e9 100%);
+      border-radius: 50%;
+      width: 2.2rem;
+      height: 2.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(56,189,248,0.10);
+      margin-right: 0.1rem;
+    }
+    .contact-link {
+      color: #0f172a;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s, text-decoration 0.2s;
+      outline: none;
+      word-break: break-all;
+    }
+    .contact-link:focus, .contact-link:hover {
+      color: #0ea5e9;
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      .contact-card {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+      }
+      .contact-methods {
+        flex-direction: column;
+        gap: 0.7rem;
+        align-items: stretch;
+      }
+      .contact-method {
+        min-width: 0;
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -350,19 +446,24 @@
     </section>
 
     <section id="contact" style="margin-top:3rem;">
-      <h2>Contact</h2>
-      <p>You can reach me via the following methods:</p>
-      <ul style="list-style:none; padding:0; margin:1rem 0 0 0;">
-        <li style="margin-bottom:0.5rem;">
-          <strong>Email:</strong> <a href="mailto:your.email@example.com" style="color:#222; text-decoration:underline;">your.email@example.com</a>
-        </li>
-        <li style="margin-bottom:0.5rem;">
-          <strong>GitHub:</strong> <a href="https://github.com/yourusername" target="_blank" rel="noopener" style="color:#222; text-decoration:underline;">github.com/yourusername</a>
-        </li>
-        <li>
-          <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener" style="color:#222; text-decoration:underline;">linkedin.com/in/yourusername</a>
-        </li>
-      </ul>
+      <div class="contact-card" tabindex="-1">
+        <h2>Contact</h2>
+        <p>Let's connect! Reach out via any method below:</p>
+        <div class="contact-methods">
+          <div class="contact-method">
+            <span class="contact-icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
+            <a class="contact-link" href="mailto:your.email@example.com">your.email@example.com</a>
+          </div>
+          <div class="contact-method">
+            <span class="contact-icon" aria-hidden="true"><i class="fa-brands fa-github"></i></span>
+            <a class="contact-link" href="https://github.com/yourusername" target="_blank" rel="noopener">github.com/yourusername</a>
+          </div>
+          <div class="contact-method">
+            <span class="contact-icon" aria-hidden="true"><i class="fa-brands fa-linkedin-in"></i></span>
+            <a class="contact-link" href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">linkedin.com/in/yourusername</a>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </body>
