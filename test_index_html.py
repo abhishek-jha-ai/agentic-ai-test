@@ -192,3 +192,108 @@ def test_projects_card_buttons_and_animations():
     # Arrow icon animation
     assert '.arrow' in content, 'Project button should have an arrow icon.'
     assert '.project-btn:hover .arrow' in content or '.project-btn:focus .arrow' in content, 'Arrow icon should animate on button hover.'
+
+# --- Contact/Footer Section Tests ---
+class ContactSectionParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_contact_section = False
+        self.contact_section_found = False
+        self.contact_card_found = False
+        self.contact_methods = []
+        self.current_method = None
+        self.current_tag = None
+        self.contact_links = []
+        self.contact_icons = []
+        self.h2_found = False
+        self.p_found = False
+    def handle_starttag(self, tag, attrs):
+        attrs_dict = dict(attrs)
+        if tag == 'section' and attrs_dict.get('id', '').lower() == 'contact':
+            self.in_contact_section = True
+            self.contact_section_found = True
+        if self.in_contact_section and tag == 'div' and 'contact-card' in attrs_dict.get('class', ''):
+            self.contact_card_found = True
+        if self.contact_card_found and tag == 'div' and 'contact-method' in attrs_dict.get('class', ''):
+            self.current_method = {'icon': False, 'link': False}
+        if self.current_method is not None and tag == 'span' and 'contact-icon' in attrs_dict.get('class', ''):
+            self.current_method['icon'] = True
+            self.contact_icons.append(True)
+        if self.current_method is not None and tag == 'a' and 'contact-link' in attrs_dict.get('class', ''):
+            self.current_method['link'] = True
+            self.contact_links.append(attrs_dict.get('href', ''))
+        if self.contact_card_found and tag == 'h2':
+            self.h2_found = True
+        if self.contact_card_found and tag == 'p':
+            self.p_found = True
+    def handle_endtag(self, tag):
+        if tag == 'section' and self.in_contact_section:
+            self.in_contact_section = False
+        if tag == 'div' and self.current_method is not None:
+            self.contact_methods.append(self.current_method)
+            self.current_method = None
+    def handle_data(self, data):
+        pass
+
+def test_contact_section_modernized():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    parser = ContactSectionParser()
+    parser.feed(content)
+    # Section with id="contact" exists
+    assert parser.contact_section_found, 'Contact section with id="contact" not found.'
+    # Modern card container exists
+    assert parser.contact_card_found, 'Modern contact card container not found.'
+    # There are at least 3 contact methods (email, GitHub, LinkedIn)
+    assert len(parser.contact_methods) >= 3, 'There should be at least 3 contact methods.'
+    # Each method has an icon and a link
+    for method in parser.contact_methods:
+        assert method['icon'], 'Each contact method should have an icon.'
+        assert method['link'], 'Each contact method should have a clickable link.'
+    # Section heading and intro text
+    assert parser.h2_found, 'Contact card should have a heading.'
+    assert parser.p_found, 'Contact card should have an intro/description paragraph.'
+    # Check for correct links
+    found_email = any(href.startswith('mailto:') for href in parser.contact_links)
+    found_github = any('github.com' in href for href in parser.contact_links)
+    found_linkedin = any('linkedin.com' in href for href in parser.contact_links)
+    assert found_email, 'Contact section should have a mailto: email link.'
+    assert found_github, 'Contact section should have a GitHub link.'
+    assert found_linkedin, 'Contact section should have a LinkedIn link.'
+
+def test_contact_section_accessibility_and_affordance():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read().lower()
+    # Links are keyboard accessible (tabindex or default)
+    assert 'tabindex' in content or 'contact-link' in content, 'Contact links should be keyboard accessible.'
+    # aria-hidden on icons for decorative icons
+    assert 'aria-hidden="true"' in content, 'Contact icons should have aria-hidden="true" for accessibility.'
+    # Links have visible focus/hover affordance
+    assert '.contact-link:focus' in content or '.contact-link:hover' in content, 'Contact links should have focus/hover affordance.'
+    # Sufficient color contrast (check for color and background)
+    assert 'color: #0f172a' in content or 'color:#0f172a' in content, 'Contact links should have high contrast color.'
+    # No regressions to other sections (about, projects, etc. still present)
+    assert '#about' in content and '#projects' in content, 'Other sections should not be removed.'
+
+def test_contact_section_modern_styles():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read().lower()
+    # Card background with gradient or subtle accent
+    assert 'linear-gradient' in content, 'Contact card should use a gradient accent.'
+    # Card has soft shadow
+    assert 'box-shadow' in content, 'Contact card should have a soft shadow.'
+    # Card has rounded corners
+    assert 'border-radius: 20px' in content or 'border-radius: 22px' in content, 'Contact card should have rounded corners.'
+    # Contact methods have chip/button style (rounded, shadow, background)
+    assert 'contact-method' in content, 'Contact methods should have modern chip/button style.'
+    assert 'border-radius: 14px' in content or 'border-radius: 12px' in content, 'Contact method chips should have rounded corners.'
+    # Responsive: media queries for mobile
+    assert '@media (max-width: 600px)' in content, 'Contact section should be responsive for mobile.'
+
+def test_contact_section_responsive_layout():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read().lower()
+    # On mobile, contact methods stack vertically
+    assert 'flex-direction: column' in content or 'flex-direction:column' in content, 'Contact methods should stack vertically on mobile.'
+    # Check for gap/spacing
+    assert 'gap:' in content, 'Contact methods should have spacing between them.'
