@@ -299,3 +299,126 @@ def test_index_html_has_projects_section():
         assert project['description'], 'Each project card should have a description.'
         assert project['link'] is not None, 'Each project card should have a link.'
         assert project['link'].startswith('#') or project['link'].startswith('http'), 'Project link should be a valid URL or anchor.'
+
+# --- About Section Detailed Tests ---
+from html.parser import HTMLParser
+
+class AboutSectionParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_about_section = False
+        self.found_profile_img = False
+        self.profile_img_src = None
+        self.profile_img_alt = None
+        self.found_heading = False
+        self.heading_text = ''
+        self.found_role = False
+        self.role_text = ''
+        self.found_bio = False
+        self.bio_text = ''
+        self.experience_highlights = []
+        self.in_exp_highlight = False
+        self.found_tech_chips = []
+        self.in_tech_chip = False
+        self.current_tech_chip_title = None
+        self.found_resume_btn = False
+        self.resume_btn_href = None
+        self.resume_btn_text = ''
+        self.tag_stack = []
+    def handle_starttag(self, tag, attrs):
+        self.tag_stack.append(tag)
+        if tag == 'section':
+            for k, v in attrs:
+                if k == 'id' and v.lower() == 'about':
+                    self.in_about_section = True
+        if self.in_about_section:
+            if tag == 'img':
+                src = None
+                alt = None
+                for k, v in attrs:
+                    if k == 'src':
+                        src = v
+                    if k == 'alt':
+                        alt = v
+                if src and alt:
+                    self.found_profile_img = True
+                    self.profile_img_src = src
+                    self.profile_img_alt = alt
+            if tag == 'h2':
+                self.found_heading = True
+            if tag == 'div':
+                for k, v in attrs:
+                    if k == 'class' and 'about-role' in v:
+                        self.found_role = True
+            if tag == 'p':
+                self.found_bio = True
+            if tag == 'span':
+                for k, v in attrs:
+                    if k == 'class' and 'exp-highlight' in v:
+                        self.in_exp_highlight = True
+            if tag == 'span':
+                for k, v in attrs:
+                    if k == 'class' and 'tech-chip' in v:
+                        self.in_tech_chip = True
+                        for k2, v2 in attrs:
+                            if k2 == 'title':
+                                self.current_tech_chip_title = v2
+            if tag == 'a':
+                for k, v in attrs:
+                    if k == 'class' and 'resume-btn' in v:
+                        self.found_resume_btn = True
+                    if k == 'href' and self.found_resume_btn:
+                        self.resume_btn_href = v
+    def handle_endtag(self, tag):
+        if self.tag_stack:
+            self.tag_stack.pop()
+        if tag == 'section' and self.in_about_section:
+            self.in_about_section = False
+        if tag == 'span' and self.in_exp_highlight:
+            self.in_exp_highlight = False
+        if tag == 'span' and self.in_tech_chip:
+            self.in_tech_chip = False
+            self.current_tech_chip_title = None
+        if tag == 'a' and self.found_resume_btn:
+            self.found_resume_btn = False
+    def handle_data(self, data):
+        if self.in_about_section:
+            if self.found_heading and self.tag_stack and self.tag_stack[-1] == 'h2':
+                self.heading_text += data.strip()
+            if self.found_role and self.tag_stack and self.tag_stack[-1] == 'div':
+                self.role_text += data.strip()
+            if self.found_bio and self.tag_stack and self.tag_stack[-1] == 'p':
+                self.bio_text += data.strip()
+            if self.in_exp_highlight:
+                text = data.strip()
+                if text:
+                    self.experience_highlights.append(text)
+            if self.in_tech_chip and self.current_tech_chip_title:
+                # We record the tech chip title
+                if self.current_tech_chip_title not in self.found_tech_chips:
+                    self.found_tech_chips.append(self.current_tech_chip_title)
+            if self.found_resume_btn and self.tag_stack and self.tag_stack[-1] == 'a':
+                self.resume_btn_text += data.strip()
+
+def test_index_html_about_section_structure():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    parser = AboutSectionParser()
+    parser.feed(content)
+    assert parser.in_about_section is False, 'Parser should end outside about section.'
+    assert parser.found_profile_img, 'About section should have a profile image with src and alt.'
+    assert parser.profile_img_src and parser.profile_img_src.startswith('http'), 'Profile image src should be a valid URL.'
+    assert parser.profile_img_alt and len(parser.profile_img_alt) > 0, 'Profile image should have alt text.'
+    assert parser.found_heading, 'About section should have a heading (h2).'
+    assert parser.heading_text and len(parser.heading_text) > 0, 'About section heading text should not be empty.'
+    assert parser.found_role, 'About section should have a role/title div.'
+    assert parser.role_text and len(parser.role_text) > 0, 'About section role/title text should not be empty.'
+    assert parser.found_bio, 'About section should have a bio paragraph.'
+    assert parser.bio_text and len(parser.bio_text) > 0, 'About section bio text should not be empty.'
+    assert len(parser.experience_highlights) >= 1, 'About section should have at least one experience highlight.'
+    # Check tech chips include expected techs
+    expected_techs = {'JavaScript', 'Python', 'React', 'Node.js', 'HTML5', 'CSS3'}
+    found_techs = set(parser.found_tech_chips)
+    assert expected_techs.issubset(found_techs), f'About section tech stack chips should include {expected_techs}.'
+    assert parser.resume_btn_href is not None, 'About section should have a resume button with href.'
+    assert parser.resume_btn_text.lower().startswith('view resume'), 'Resume button text should start with "View Resume".'
