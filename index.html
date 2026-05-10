@@ -98,47 +98,174 @@
     /* Projects Section Styles */
     #projects {
       margin-top: 3rem;
+      padding: 0 0 2.5rem 0;
+    }
+    .projects-section-intro {
+      max-width: 700px;
+      margin: 0 auto 2.5rem auto;
+      text-align: center;
+      color: #334155;
+      font-size: 1.15rem;
+      line-height: 1.7;
     }
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 0;
+      padding: 0 0.5rem;
+    }
+    @media (max-width: 900px) {
+      .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+        padding: 0;
+      }
     }
     .project-card {
-      background: #f0f0f0;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.75);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.04);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(200, 220, 255, 0.18);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      transition: box-shadow 0.3s ease;
+      overflow: hidden;
+      transition: box-shadow 0.35s cubic-bezier(.4,2,.6,1), transform 0.25s cubic-bezier(.4,2,.6,1), border 0.25s;
+      position: relative;
+      min-height: 420px;
     }
-    .project-card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      pointer-events: none;
+      transition: box-shadow 0.3s, border 0.3s;
+    }
+    .project-card:hover, .project-card:focus-within {
+      box-shadow: 0 12px 36px 0 rgba(31, 38, 135, 0.18), 0 4px 24px 0 rgba(0,0,0,0.10);
+      transform: translateY(-8px) scale(1.025);
+      border: 1.5px solid #38bdf8;
+    }
+    .project-card:hover::before, .project-card:focus-within::before {
+      box-shadow: 0 0 0 3px #38bdf8, 0 0 16px 2px #0ea5e9;
+      border: 1.5px solid #38bdf8;
+    }
+    .project-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      border-radius: 18px 18px 0 0;
+      margin-bottom: 1.1rem;
+      transition: transform 0.35s cubic-bezier(.4,2,.6,1);
+      background: #e0e7ef;
+      min-height: 120px;
+      display: block;
+    }
+    .project-card:hover .project-image,
+    .project-card:focus-within .project-image {
+      transform: scale(1.045);
+    }
+    .project-content {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.2rem 1.2rem 1.2rem;
     }
     .project-title {
-      font-size: 1.2rem;
-      margin: 0 0 0.5rem 0;
-      color: #222;
+      font-size: clamp(1.18rem, 2vw, 1.35rem);
+      font-weight: 700;
+      margin: 0 0 0.35rem 0;
+      color: #0f172a;
+      letter-spacing: -0.01em;
     }
     .project-description {
       flex-grow: 1;
-      font-size: 0.95rem;
-      color: #555;
-      margin-bottom: 1rem;
+      font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+      color: #475569;
+      margin-bottom: 1.1rem;
+      line-height: 1.6;
     }
-    .project-link {
-      text-decoration: none;
-      color: #0066cc;
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.1rem;
+    }
+    .project-tag {
+      background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%);
+      color: #fff;
+      font-size: 0.82rem;
       font-weight: 600;
-      align-self: flex-start;
-      transition: color 0.2s ease;
+      padding: 0.22rem 0.75rem;
+      border-radius: 12px;
+      letter-spacing: 0.01em;
+      box-shadow: 0 1px 4px rgba(56,189,248,0.10);
+      user-select: none;
     }
-    .project-link:hover, .project-link:focus {
-      color: #004999;
-      text-decoration: underline;
+    .project-actions {
+      display: flex;
+      gap: 0.7rem;
+      margin-top: auto;
+    }
+    .project-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+      background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%);
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(56,189,248,0.10);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-btn:hover, .project-btn:focus {
+      background: linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%);
+      box-shadow: 0 4px 16px rgba(56,189,248,0.18);
+      transform: translateY(-2px) scale(1.04);
+    }
+    .project-btn .arrow {
+      display: inline-block;
+      transition: transform 0.25s cubic-bezier(.4,2,.6,1);
+    }
+    .project-btn:hover .arrow, .project-btn:focus .arrow {
+      transform: translateX(4px);
+    }
+    .project-btn.github {
+      background: #f1f5f9;
+      color: #0f172a;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 2px 8px rgba(100,116,139,0.07);
+      transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+    }
+    .project-btn.github:hover, .project-btn.github:focus {
+      background: #e0e7ef;
+      color: #0ea5e9;
+      border: 1.5px solid #38bdf8;
+      box-shadow: 0 4px 16px rgba(56,189,248,0.10);
+    }
+    @media (max-width: 600px) {
+      .project-content {
+        padding: 0 0.8rem 1rem 0.8rem;
+      }
+      .project-title {
+        font-size: 1.08rem;
+      }
     }
   </style>
 </head>
@@ -165,22 +292,59 @@
     </section>
 
     <section id="projects">
-      <h2>Projects</h2>
+      <h2 style="text-align:center;font-size:clamp(2rem,4vw,2.5rem);font-weight:800;color:#0f172a;margin-bottom:0.5rem;letter-spacing:-0.01em;">Projects</h2>
+      <div class="projects-section-intro">
+        <p>Explore a selection of my recent work. Each project demonstrates modern UI, clean code, and a focus on user experience. Hover to see more details and actions.</p>
+      </div>
       <div class="projects-grid">
         <article class="project-card">
-          <h3 class="project-title">Habit Tracker</h3>
-          <p class="project-description">A web app that helps users track their daily habits and goals with reminders and analytics.</p>
-          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+          <img class="project-image" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" alt="Habit Tracker screenshot">
+          <div class="project-content">
+            <h3 class="project-title">Habit Tracker</h3>
+            <p class="project-description">A web app that helps users track their daily habits and goals with reminders and analytics.</p>
+            <div class="project-tags">
+              <span class="project-tag">React</span>
+              <span class="project-tag">Node.js</span>
+              <span class="project-tag">MongoDB</span>
+              <span class="project-tag">Chart.js</span>
+            </div>
+            <div class="project-actions">
+              <a href="#" class="project-btn" target="_blank" rel="noopener">Live Demo <span class="arrow">&#8594;</span></a>
+              <a href="#" class="project-btn github" target="_blank" rel="noopener">GitHub <span class="arrow">&#8599;</span></a>
+            </div>
+          </div>
         </article>
         <article class="project-card">
-          <h3 class="project-title">E-Commerce Prototype</h3>
-          <p class="project-description">An e-commerce platform prototype featuring a clean UI and seamless checkout experience.</p>
-          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+          <img class="project-image" src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" alt="E-Commerce Prototype screenshot">
+          <div class="project-content">
+            <h3 class="project-title">E-Commerce Prototype</h3>
+            <p class="project-description">An e-commerce platform prototype featuring a clean UI and seamless checkout experience.</p>
+            <div class="project-tags">
+              <span class="project-tag">Vue.js</span>
+              <span class="project-tag">Firebase</span>
+              <span class="project-tag">Stripe</span>
+            </div>
+            <div class="project-actions">
+              <a href="#" class="project-btn" target="_blank" rel="noopener">Live Demo <span class="arrow">&#8594;</span></a>
+              <a href="#" class="project-btn github" target="_blank" rel="noopener">GitHub <span class="arrow">&#8599;</span></a>
+            </div>
+          </div>
         </article>
         <article class="project-card">
-          <h3 class="project-title">Blog Template</h3>
-          <p class="project-description">A mobile-friendly blog template with customizable themes and social media integration.</p>
-          <a href="#" class="project-link" target="_blank" rel="noopener">View Project</a>
+          <img class="project-image" src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" alt="Blog Template screenshot">
+          <div class="project-content">
+            <h3 class="project-title">Blog Template</h3>
+            <p class="project-description">A mobile-friendly blog template with customizable themes and social media integration.</p>
+            <div class="project-tags">
+              <span class="project-tag">HTML5</span>
+              <span class="project-tag">CSS3</span>
+              <span class="project-tag">Responsive</span>
+            </div>
+            <div class="project-actions">
+              <a href="#" class="project-btn" target="_blank" rel="noopener">Live Demo <span class="arrow">&#8594;</span></a>
+              <a href="#" class="project-btn github" target="_blank" rel="noopener">GitHub <span class="arrow">&#8599;</span></a>
+            </div>
+          </div>
         </article>
       </div>
     </section>
