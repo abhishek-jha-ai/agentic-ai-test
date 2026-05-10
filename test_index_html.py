@@ -192,3 +192,57 @@ def test_projects_card_buttons_and_animations():
     # Arrow icon animation
     assert '.arrow' in content, 'Project button should have an arrow icon.'
     assert '.project-btn:hover .arrow' in content or '.project-btn:focus .arrow' in content, 'Arrow icon should animate on button hover.'
+
+
+# --- Hello Section Tests ---
+def test_hello_section_presence_and_structure():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check Hello section heading
+    assert '<h2>Hello' in content or '<h2>hello' in content.lower(), 'Hello section should have an <h2> heading with "Hello".'
+    # Check Hello section paragraph
+    assert '<p>' in content and 'homepage of my personal portfolio' in content.lower(), 'Hello section should have a paragraph describing the homepage.'
+
+
+def test_hello_section_modern_premium_style():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read().lower()
+    # Check for premium style cues: layered card or subtle glass effect
+    # We expect some border-radius and box-shadow or backdrop-filter near Hello section
+    # Since Hello is inside <main>, check main styles
+    assert 'border-radius' in content, 'Hello section or main container should have border-radius for premium style.'
+    assert 'box-shadow' in content, 'Hello section or main container should have box-shadow for premium style.'
+    # Check for subtle glass effect keywords
+    assert ('backdrop-filter' in content or '-webkit-backdrop-filter' in content), 'Hello section or main container should have subtle glass effect.'
+
+
+def test_about_section_presence_and_structure():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check About section exists with id="about"
+    assert '<section id="about"' in content.lower(), 'About section should exist with id="about".'
+    # Check About section heading
+    assert '<h2>About' in content or '<h2>about' in content.lower(), 'About section should have an <h2> heading with "About".'
+    # Check About section paragraph
+    assert 'software engineer passionate' in content.lower(), 'About section should have a descriptive paragraph about the author.'
+
+
+def test_about_section_modern_premium_style():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read().lower()
+    # Check for card-like styling cues in About section
+    # Look for border-radius, box-shadow, backdrop-filter near About section
+    assert 'border-radius' in content, 'About section should have border-radius for premium style.'
+    assert 'box-shadow' in content, 'About section should have box-shadow for premium style.'
+    assert ('backdrop-filter' in content or '-webkit-backdrop-filter' in content), 'About section should have subtle glass effect.'
+
+
+def test_hello_and_about_responsive_layout():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check for media queries or responsive styles affecting Hello and About
+    assert '@media' in content, 'CSS should include media queries for responsive layout.'
+    # Check for max-width or width constraints for mobile
+    assert 'max-width' in content or 'width:' in content, 'CSS should constrain width for mobile responsiveness.'
+    # Check for flex or grid usage for layout
+    assert 'flex' in content or 'grid' in content, 'CSS should use flex or grid for responsive layout.'
