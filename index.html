@@ -363,6 +363,97 @@
         font-size: 1.08rem;
       }
     }
+    /* Modern Hello & About Section Styles */
+    .hello-about-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .modern-card {
+      background: rgba(255,255,255,0.72);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10), 0 1.5px 8px 0 rgba(0,0,0,0.04);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(200, 220, 255, 0.18);
+      position: relative;
+      padding: 2.2rem 2rem 1.5rem 2rem;
+      transition: box-shadow 0.35s cubic-bezier(.4,2,.6,1), transform 0.25s cubic-bezier(.4,2,.6,1);
+      overflow: hidden;
+      animation: fadeSlideIn 0.8s cubic-bezier(.4,2,.6,1) both;
+    }
+    .modern-card:hover, .modern-card:focus-within {
+      box-shadow: 0 12px 36px 0 rgba(31, 38, 135, 0.18), 0 4px 24px 0 rgba(0,0,0,0.10);
+      transform: translateY(-6px) scale(1.018);
+      border: 1.5px solid #38bdf8;
+    }
+    .modern-card .accent-line {
+      position: absolute;
+      top: 0;
+      left: 2rem;
+      width: 48px;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #38bdf8 0%, #0ea5e9 100%);
+      margin-bottom: 1.2rem;
+      z-index: 2;
+      box-shadow: 0 1px 4px rgba(56,189,248,0.10);
+    }
+    .modern-card h2 {
+      margin-top: 0.7rem;
+      margin-bottom: 0.5rem;
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .modern-card .icon-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      background: linear-gradient(120deg, #e0f7fa 0%, #bae6fd 100%);
+      color: #0ea5e9;
+      font-size: 1.25rem;
+      box-shadow: 0 1px 4px rgba(56,189,248,0.10);
+    }
+    .modern-card p {
+      color: #334155;
+      font-size: clamp(1.08rem, 1.8vw, 1.18rem);
+      margin-bottom: 0.3rem;
+      line-height: 1.7;
+    }
+    @media (max-width: 600px) {
+      .hello-about-wrapper {
+        gap: 1.2rem;
+      }
+      .modern-card {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+      }
+      .modern-card .accent-line {
+        left: 0.7rem;
+        width: 36px;
+      }
+      .modern-card h2 {
+        font-size: 1.45rem;
+      }
+    }
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(32px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
   </style>
 </head>
 <body>
@@ -379,13 +470,25 @@
     <p>Discover my projects and experience</p>
   </header>
   <main>
-    <h2>Hello!</h2>
-    <p>This is the homepage of my personal portfolio website. More sections coming soon.</p>
 
-    <section id="about" style="margin-top:3rem;">
-      <h2>About</h2>
-      <p>I am a software engineer passionate about building impactful applications and learning new technologies. Welcome to my portfolio where I showcase some of my projects.</p>
-    </section>
+    <div class="hello-about-wrapper">
+      <section id="hello" class="modern-card" tabindex="0" aria-label="Hello section">
+        <div class="accent-line"></div>
+        <h2><span class="icon-chip"><i class="fa-regular fa-hand-wave"></i></span>Hello!</h2>
+        <p>
+          Welcome to my personal portfolio website.<br>
+          <span style="font-weight:600;color:#0ea5e9;">Explore my work and journey below.</span>
+        </p>
+      </section>
+      <section id="about" class="modern-card" tabindex="0" aria-label="About section">
+        <div class="accent-line"></div>
+        <h2><span class="icon-chip"><i class="fa-solid fa-user"></i></span>About</h2>
+        <p>
+          I am a <span style="font-weight:600;">software engineer</span> passionate about building impactful applications and learning new technologies.<br>
+          <span style="color:#0ea5e9;">Welcome to my portfolio</span> where I showcase some of my projects.
+        </p>
+      </section>
+    </div>
 
     <section id="projects">
       <h2 style="text-align:center;font-size:clamp(2rem,4vw,2.5rem);font-weight:800;color:#0f172a;margin-bottom:0.5rem;letter-spacing:-0.01em;">Projects</h2>
