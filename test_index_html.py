@@ -3,7 +3,6 @@ from html.parser import HTMLParser
 
 # Existing tests omitted for brevity...
 
-
 def test_hello_section_modernized():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
