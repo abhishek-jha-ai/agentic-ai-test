@@ -3,7 +3,6 @@ from html.parser import HTMLParser
 
 # Existing tests omitted for brevity...
 
-
 def test_hello_section_modernized():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -60,3 +59,45 @@ def test_hello_about_responsive_and_accessible():
     # Check that the sections have aria-labels for accessibility
     assert 'aria-label="hello section"' in content, 'Hello section missing aria-label.'
     assert 'aria-label="about section"' in content, 'About section missing aria-label.'
+
+
+def test_navigation_script_is_deferred():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # Check nav.js is loaded with defer
+    assert '<script defer src="nav.js"></script>' in content, "nav.js script should be loaded with defer for non-blocking navigation."
+
+
+def test_navigation_menu_is_rendered_modularly():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # The <nav> element should be empty in the HTML markup (menu is rendered by JS)
+    import re
+    nav_match = re.search(r'<nav[^>]*id="main-nav"[^>]*>(.*?)</nav>', content, re.DOTALL)
+    assert nav_match, "Main nav element with id='main-nav' missing."
+    nav_inner = nav_match.group(1).strip()
+    assert nav_inner == '', "Navigation menu should not be rendered inline in HTML; it should be injected by JS."
+
+
+def test_navigation_script_avoids_inline_injection():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # The navigation script should not use innerHTML or document.write (to avoid injection points)
+    nav_script_match = False
+    for line in content.splitlines():
+        if 'const navLinks' in line:
+            nav_script_match = True
+        if nav_script_match:
+            assert 'innerHTML' not in line, "Navigation script should not use innerHTML (potential injection point)."
+            assert 'document.write' not in line, "Navigation script should not use document.write (potential injection point)."
+    # Also check that the script uses createElement for menu rendering
+    assert 'createElement' in content, "Navigation script should use createElement for modular rendering."
+
+
+def test_navigation_code_is_modular_and_not_inline():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    # The navigation code should be wrapped in an IIFE (modular, not polluting global scope)
+    assert '(function()' in content or '(function ()' in content, "Navigation code should be modular (IIFE pattern)."
+    # The navigation code should only append to nav, not replace or overwrite
+    assert 'appendChild' in content, "Navigation code should use appendChild for safe DOM updates."
