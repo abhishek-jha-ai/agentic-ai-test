@@ -1,8 +1,6 @@
 import os
 from html.parser import HTMLParser
 
-# Existing tests omitted for brevity...
-
 def test_hello_section_modernized():
     with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
@@ -145,3 +143,67 @@ def test_data_engineering_pipeline_card_responsive():
     # Check that the card is readable (has project-title and project-description)
     assert 'project-title' in html, 'Project title missing in responsive check.'
     assert 'project-description' in html, 'Project description missing in responsive check.'
+
+# --- BLOG SECTION TESTS ---
+def test_blog_section_exists():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read()
+    # Check for blog section by id
+    assert '<section id="blog"' in html, 'Blog section with id="blog" missing.'
+    # Check for Blog heading
+    assert '>Blog<' in html or '>Blog</h2>' in html, 'Blog section heading missing.'
+    # Check for intro text
+    assert 'Read my latest thoughts' in html or 'tutorials on technology' in html, 'Blog section intro text missing.'
+
+
+def test_blog_section_has_blog_cards():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read()
+    # Blog cards should be articles with class project-card inside the blog section
+    blog_section_start = html.find('<section id="blog"')
+    assert blog_section_start != -1, 'Blog section not found.'
+    blog_section_end = html.find('</section>', blog_section_start)
+    assert blog_section_end != -1, 'Blog section closing tag not found.'
+    blog_html = html[blog_section_start:blog_section_end]
+    # There should be at least 3 blog cards
+    count = blog_html.count('class="project-card"')
+    assert count >= 3, f'Expected at least 3 blog cards, found {count}.'
+    # Each card should have project-title and project-description
+    assert 'How to Build a Modern Portfolio' in blog_html, 'Blog card title missing.'
+    assert 'Productivity Tips for Developers' in blog_html, 'Blog card title missing.'
+    assert 'Understanding REST APIs' in blog_html, 'Blog card title missing.'
+    assert 'step-by-step guide' in blog_html or 'guide to designing' in blog_html, 'Blog card description missing.'
+    assert 'Productivity' in blog_html, 'Blog tag missing.'
+    assert 'APIs' in blog_html, 'Blog tag missing.'
+
+
+def test_blog_cards_visual_consistency():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read()
+    # Blog cards should use the same classes as project cards
+    blog_section_start = html.find('<section id="blog"')
+    blog_section_end = html.find('</section>', blog_section_start)
+    blog_html = html[blog_section_start:blog_section_end]
+    # Check for project-image, project-content, project-title, project-description, project-tags, project-actions
+    assert 'project-image' in blog_html, 'project-image class missing in blog card.'
+    assert 'project-content' in blog_html, 'project-content class missing in blog card.'
+    assert 'project-title' in blog_html, 'project-title class missing in blog card.'
+    assert 'project-description' in blog_html, 'project-description class missing in blog card.'
+    assert 'project-tags' in blog_html, 'project-tags class missing in blog card.'
+    assert 'project-actions' in blog_html, 'project-actions class missing in blog card.'
+
+
+def test_blog_section_responsive():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read().lower()
+    # Blog section should use projects-grid for layout
+    blog_section_start = html.find('<section id="blog"')
+    blog_section_end = html.find('</section>', blog_section_start)
+    blog_html = html[blog_section_start:blog_section_end]
+    assert 'projects-grid' in blog_html, 'Blog section missing projects-grid for layout.'
+    # Responsive media query should exist
+    assert '@media (max-width: 600px)' in html, 'Responsive media query missing for blog section.'
+    # Cards should not use fixed pixel widths
+    assert 'width: 100%' in html or 'grid-template-columns: 1fr' in html, 'Blog cards may not be responsive.'
+    # Blog cards should be keyboard accessible (tabindex)
+    assert 'tabindex="0"' in blog_html, 'Blog card missing tabindex for accessibility.'
