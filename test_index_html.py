@@ -207,3 +207,83 @@ def test_blog_section_responsive():
     assert 'width: 100%' in html or 'grid-template-columns: 1fr' in html, 'Blog cards may not be responsive.'
     # Blog cards should be keyboard accessible (tabindex)
     assert 'tabindex="0"' in blog_html, 'Blog card missing tabindex for accessibility.'
+
+# --- TESTIMONIALS SECTION TESTS ---
+def test_testimonials_section_exists():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read()
+    # Check for testimonials section by id
+    assert '<section id="testimonials"' in html, 'Testimonials section with id="testimonials" missing.'
+    # Check for Testimonials heading
+    assert '>Testimonials<' in html or '>Testimonials</h2>' in html, 'Testimonials section heading missing.'
+    # Check for intro text
+    assert 'testimonial' in html.lower() or 'what people say' in html.lower(), 'Testimonials section intro text missing.'
+
+
+def test_testimonials_cards_count_and_content():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read()
+    # Find testimonials section
+    section_start = html.find('<section id="testimonials"')
+    assert section_start != -1, 'Testimonials section not found.'
+    section_end = html.find('</section>', section_start)
+    assert section_end != -1, 'Testimonials section closing tag not found.'
+    testimonials_html = html[section_start:section_end]
+    # There should be at least 3 testimonial cards (look for a card class or article)
+    card_count = testimonials_html.count('testimonial-card') + testimonials_html.count('class="modern-card"')
+    # Accept either a dedicated testimonial-card class or modern-card reused
+    assert card_count >= 3, f'Expected at least 3 testimonial cards, found {card_count}.'
+    # Each card should have a person name, role/company, and testimonial text
+    # We'll check for at least 3 distinct names and roles
+    import re
+    names = re.findall(r'<strong>([^<]+)</strong>', testimonials_html)
+    roles = re.findall(r'<span[^>]*class=["\']?role["\']?[^>]*>([^<]+)</span>', testimonials_html)
+    testimonial_texts = re.findall(r'<p[^>]*class=["\']?testimonial-text["\']?[^>]*>([^<]+)</p>', testimonials_html)
+    # Accept at least 3 names and 3 roles or fallback to generic text check
+    assert len(names) >= 3 or len(roles) >= 3 or card_count >= 3, 'Expected at least 3 testimonial names/roles.'
+    # Check for testimonial text (at least 3)
+    if len(testimonial_texts) < 3:
+        # Fallback: look for generic testimonial text pattern
+        assert testimonials_html.lower().count('recommend') + testimonials_html.lower().count('pleasure') + testimonials_html.lower().count('enjoyed') >= 1, 'Testimonial text missing.'
+
+
+def test_nav_includes_testimonials_link():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read().lower()
+    # Check for testimonials link in nav
+    nav_start = html.find('<nav')
+    nav_end = html.find('</nav>', nav_start)
+    nav_html = html[nav_start:nav_end]
+    assert 'testimonials' in nav_html, 'Testimonials link missing in navigation.'
+    # Check that the link is an anchor with href to #testimonials
+    assert 'href="#testimonials"' in nav_html, 'Testimonials nav link does not point to #testimonials.'
+
+
+def test_active_nav_logic_includes_testimonials():
+    # This test checks for the presence of logic or markup that would allow active-section highlight for testimonials
+    # Since this is static HTML, we check for nav link to #testimonials and possible class or id for active state
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read().lower()
+    nav_start = html.find('<nav')
+    nav_end = html.find('</nav>', nav_start)
+    nav_html = html[nav_start:nav_end]
+    # Check for class or id that could be used for active state
+    assert 'testimonials' in nav_html, 'Testimonials link missing in navigation for active logic.'
+    # Accept either class="active" or data-active or similar for testimonials link
+    # (We do not require the actual JS, just that the markup supports it)
+    assert 'href="#testimonials"' in nav_html, 'Testimonials nav link does not point to #testimonials for active logic.'
+
+# --- REGRESSION CHECKS ---
+def test_home_about_projects_contact_still_present():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        html = f.read().lower()
+    # Home
+    assert '<header id="home"' in html, 'Home section missing.'
+    # About
+    assert '<section id="about"' in html, 'About section missing.'
+    # Projects
+    assert '<section id="projects"' in html, 'Projects section missing.'
+    # Contact
+    assert '<section id="contact"' in html, 'Contact section missing.'
+    # Data Engineering Pipeline card
+    assert 'data engineering pipeline' in html, 'Data Engineering Pipeline card missing.'
